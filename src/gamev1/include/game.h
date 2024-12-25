@@ -8,7 +8,7 @@ public:
     ~Game() {}
 
     bool init(const char *title, int xpos, int ypos, int width,
-                int height, int flags);
+                int height, bool fullscreen);
     void render();
     void update();
     void handleEvents();
@@ -18,6 +18,10 @@ public:
 private:
     SDL_Window* m_pWindow;
     SDL_Renderer* m_pRenderer;
+
+    SDL_Texture* m_pTexture;
+    SDL_Rect m_sourceRectangle;
+    SDL_Rect m_destinationRectangle;
 
     bool m_bRunning;
 };
