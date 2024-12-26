@@ -4,7 +4,7 @@ target_link_libraries(gamev1 PRIVATE game)
 
 add_library(game STATIC game.cpp)
 target_include_directories(game PUBLIC include)
-target_link_libraries(game PUBLIC SDL2main SDL2-static SDL2_image texturemanager)
+target_link_libraries(game PUBLIC SDL2main SDL2-static SDL2_image texturemanager gameobject)
 
 add_library(texturemanager STATIC TextureManager.cpp)
 target_include_directories(texturemanager PUBLIC include)

@@ -1,28 +1,45 @@
 #include "gameobject.h"
 #include <iostream>
-void GameObject::draw()
+#include "TextureManager.h"
+
+// GAME OBJECT
+void GameObject::load(int x, int y, int width, int height, std::string textureID)
 {
-    std::cout << "draw game object" << std::endl;
+    m_x = x;
+    m_y = y;
+    m_width = width;
+    m_height = height;
+    m_textureID = textureID;
+
+    m_currentRow = 1;
+    m_currentFrame = 1;
+}
+
+void GameObject::draw(SDL_Renderer *pRenderer)
+{
+    TextureManager::Instance()->drawFrame(m_textureID, m_x, m_y, m_width, m_height, m_currentRow, m_currentFrame, pRenderer);
 }
 void GameObject::update()
 {
-    std::cout << "update game object" << std::endl;
+    m_x += 1;
 }
 void GameObject::clean()
 {
     std::cout << "clean game objects" << std::endl;
 }
 
-void Player::draw()
+// PLAYER
+void Player::load(int x, int y, int width, int height, std::string textureID)
 {
-    GameObject::draw();
-    std::cout << "draw player" << std::endl;
+    GameObject::load(x, y, width, height, textureID);
+}
+void Player::draw(SDL_Renderer *pRenderer)
+{
+    GameObject::draw(pRenderer);
 }
 void Player::update()
 {
-    std::cout << "update player";
-    m_x = 10;
-    m_y = 20;
+    m_x -= 1;
 }
 void Player::clean()
 {
