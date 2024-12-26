@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include <iostream>
+#include <algorithm>
 
 bool Game::init(const char *title, int xpos, int ypos, int width,
                 int height, bool fullscreen)
@@ -31,9 +32,16 @@ bool Game::init(const char *title, int xpos, int ypos, int width,
     std::cout << "renderer creation success" << std::endl;
     SDL_SetRenderDrawColor(m_pRenderer, 255, 0, 0, 255);
 
-    TextureManager::Instance()->load("assets/animate-alpha.png","animate",m_pRenderer);
-    m_go.load(100,100,128,82,"animate");
-    m_player.load(300,300,128,82,"animate");
+    TextureManager::Instance()->load("assets/animate-alpha.png", "animate", m_pRenderer);
+    m_go = new GameObject();
+    m_player = new Player();
+
+    m_go->load(100, 100, 128, 82, "animate");
+    m_player->load(300, 300, 128, 82, "animate");
+
+    m_gameObjects.push_back(m_go);
+    m_gameObjects.push_back(m_player);
+
     m_bRunning = true;
     return true;
 }
@@ -41,8 +49,10 @@ bool Game::init(const char *title, int xpos, int ypos, int width,
 void Game::render()
 {
     SDL_RenderClear(m_pRenderer);
-    m_go.draw(m_pRenderer);
-    m_player.draw(m_pRenderer);
+    for (auto &go : m_gameObjects)
+    {
+        go->draw(m_pRenderer);
+    }
     SDL_RenderPresent(m_pRenderer);
 }
 
@@ -69,7 +79,9 @@ void Game::handleEvents()
         }
     }
 }
-void Game::update() {
-    m_go.update();
-    m_player.update();
+void Game::update()
+{
+    std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [](auto &go) {
+        go->update();
+    });
 }

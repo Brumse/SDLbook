@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "SDL.h"
 #include <SDL_image.h>
 #include "TextureManager.h"
@@ -24,6 +26,9 @@ private:
     SDL_Renderer *m_pRenderer;
     int m_currentFrame;
     bool m_bRunning;
-    GameObject m_go;
-    Player m_player;
+    GameObject* m_go;
+    GameObject* m_player;
+
+    std::vector<GameObject*> m_gameObjects;
 };
+
