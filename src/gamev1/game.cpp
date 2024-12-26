@@ -1,4 +1,5 @@
 #include "game.h"
+
 #include <iostream>
 
 bool Game::init(const char *title, int xpos, int ypos, int width,
@@ -28,22 +29,9 @@ bool Game::init(const char *title, int xpos, int ypos, int width,
         return false;
     }
     std::cout << "renderer creation success" << std::endl;
-    SDL_SetRenderDrawColor(m_pRenderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(m_pRenderer, 255, 0, 0, 255);
 
-    SDL_Surface *pTempSurface = SDL_LoadBMP("assets/rider.bmp");
-    m_pTexture = SDL_CreateTextureFromSurface(m_pRenderer, pTempSurface);
-    SDL_FreeSurface(pTempSurface);
-    SDL_QueryTexture(m_pTexture, NULL, NULL, &m_sourceRectangle.w, &m_sourceRectangle.h);
-
-    m_sourceRectangle.w=50;
-    m_sourceRectangle.h=50;    
-    m_sourceRectangle.x = 0;
-    m_sourceRectangle.y = 0;
-
-    m_destinationRectangle.x = 100;
-    m_destinationRectangle.y = 100;
-    m_destinationRectangle.w = m_sourceRectangle.w;
-    m_destinationRectangle.h = m_sourceRectangle.h;
+    TextureManager::Instance()->load("assets/animate-alpha.png","animate",m_pRenderer);
 
     m_bRunning = true;
     return true;
@@ -52,7 +40,9 @@ bool Game::init(const char *title, int xpos, int ypos, int width,
 void Game::render()
 {
     SDL_RenderClear(m_pRenderer);
-    SDL_RenderCopy(m_pRenderer, m_pTexture, 0,0);
+    auto pTextureManager = TextureManager::Instance();
+    pTextureManager->draw("animate",0,0,128,82,m_pRenderer);
+    pTextureManager->drawFrame("animate",100,100,128,82,1,m_currentFrame,m_pRenderer);
     SDL_RenderPresent(m_pRenderer);
 }
 
@@ -79,4 +69,9 @@ void Game::handleEvents()
         }
     }
 }
-void Game::update() {}
+void Game::update() {
+    const int numFrames = 6;
+    const int ticksPerFrame = 100;
+    unsigned int ticks = SDL_GetTicks();
+    m_currentFrame = (ticks/ticksPerFrame) % numFrames;
+}

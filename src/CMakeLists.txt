@@ -1,2 +1,3 @@
 add_subdirectory(hellosdl)
 add_subdirectory(gamev1)
+add_subdirectory(gameobject)
