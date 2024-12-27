@@ -1,48 +1,64 @@
 #include "gameobject.h"
 #include <iostream>
 #include "TextureManager.h"
+#include "game.h"
 
-// GAME OBJECT
-void GameObject::load(int x, int y, int width, int height, std::string textureID)
+// SDL GAME OBJECT
+SDLGameObject::SDLGameObject(const LoaderParams *pParams) : GameObject(pParams)
 {
-    m_x = x;
-    m_y = y;
-    m_width = width;
-    m_height = height;
-    m_textureID = textureID;
+    m_x = pParams->getX();
+    m_y = pParams->getY();
+    m_width = pParams->getWidth();
+    m_height = pParams->getHeight();
+    m_textureID = pParams->getTextureID();
 
     m_currentRow = 1;
-    m_currentFrame = 1;
+    m_currenctFrame = 1;
+}
+void SDLGameObject::draw()
+{
+    TextureManager::Instance()->drawFrame(m_textureID, m_x, m_y, m_width, m_height, m_currentRow, m_currenctFrame, Game::instance()->getRenderer());
 }
 
-void GameObject::draw(SDL_Renderer *pRenderer)
+void SDLGameObject::update()
 {
-    TextureManager::Instance()->drawFrame(m_textureID, m_x, m_y, m_width, m_height, m_currentRow, m_currentFrame, pRenderer);
 }
-void GameObject::update()
+
+void SDLGameObject::clean()
 {
-    m_x += 1;
-}
-void GameObject::clean()
-{
-    std::cout << "clean game objects" << std::endl;
 }
 
 // PLAYER
-void Player::load(int x, int y, int width, int height, std::string textureID)
+
+Player::Player(const LoaderParams *pParmas) : SDLGameObject(pParmas)
 {
-    GameObject::load(x, y, width, height, textureID);
 }
-void Player::draw(SDL_Renderer *pRenderer)
+void Player::draw()
 {
-    GameObject::draw(pRenderer);
+    SDLGameObject::draw();
 }
 void Player::update()
 {
     m_x -= 1;
+    m_currenctFrame = int(((SDL_GetTicks() / 100) % 6));
 }
 void Player::clean()
 {
-    GameObject::clean();
-    std::cout << "clean player";
+}
+
+// ENEMY
+Enemy::Enemy(const LoaderParams *pParmas) : SDLGameObject(pParmas)
+{
+}
+void Enemy::draw()
+{
+    SDLGameObject::draw();
+}
+void Enemy::update()
+{
+    m_x += 1;
+    m_currenctFrame = int(((SDL_GetTicks() / 100) % 6));
+}
+void Enemy::clean()
+{
 }
