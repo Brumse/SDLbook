@@ -61,7 +61,7 @@ public:
     //  getters
     float getX() const { return m_x; }
     float getY() const { return m_y; }
-    
+
     //  setters
     void setX(float x) { m_x = x; }
     void setY(float y) { m_y = y; }

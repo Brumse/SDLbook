@@ -4,14 +4,14 @@
 #include "game.h"
 
 // SDL GAME OBJECT
-SDLGameObject::SDLGameObject(const LoaderParams *pParams) : GameObject(pParams), m_postition(pParams->getX(), pParams->getY())
+SDLGameObject::SDLGameObject(const LoaderParams *pParams) : GameObject(pParams), m_postition(pParams->getX(), pParams->getY()), m_velocity(0, 0), m_acceleration(0,0)
 {
     m_width = pParams->getWidth();
     m_height = pParams->getHeight();
     m_textureID = pParams->getTextureID();
 
-    m_currentRow = 1;    // ett eller l?
-    m_currentFrame = 1; // ett eller l?
+    m_currentRow = 1;
+    m_currentFrame = 1;
 }
 void SDLGameObject::draw()
 {
@@ -20,6 +20,8 @@ void SDLGameObject::draw()
 
 void SDLGameObject::update()
 {
+    m_velocity += m_acceleration;
+    m_postition += m_velocity;
 }
 
 void SDLGameObject::clean()
@@ -37,8 +39,9 @@ void Player::draw()
 }
 void Player::update()
 {
-    m_postition.setX(m_postition.getX() - 1);
-    m_postition.setY(m_postition.getY() - 1);
+    m_currentFrame = int((SDL_GetTicks() / 100 % 6));
+    m_acceleration.setX(1);
+    SDLGameObject::update();
 }
 void Player::clean()
 {
