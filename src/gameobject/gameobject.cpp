@@ -2,9 +2,10 @@
 #include <iostream>
 #include "TextureManager.h"
 #include "game.h"
+#include "inputhandler.h"
 
 // SDL GAME OBJECT
-SDLGameObject::SDLGameObject(const LoaderParams *pParams) : GameObject(pParams), m_postition(pParams->getX(), pParams->getY()), m_velocity(0, 0), m_acceleration(0,0)
+SDLGameObject::SDLGameObject(const LoaderParams *pParams) : GameObject(pParams), m_postition(pParams->getX(), pParams->getY()), m_velocity(0, 0), m_acceleration(0, 0)
 {
     m_width = pParams->getWidth();
     m_height = pParams->getHeight();
@@ -39,12 +40,41 @@ void Player::draw()
 }
 void Player::update()
 {
+    m_velocity.setX(0);
+    m_velocity.setY(0);
+    handleInput();
     m_currentFrame = int((SDL_GetTicks() / 100 % 6));
-    m_acceleration.setX(1);
     SDLGameObject::update();
 }
 void Player::clean()
 {
+}
+
+void Player::handleInput()
+{
+    auto i_inputHandler = InputHandler::Instance();
+    if (i_inputHandler->joystickInitialised())
+    {
+        if (i_inputHandler->xvalue(0, 1) > 0 || i_inputHandler->xvalue(1, 0) < 0)
+        {
+            m_velocity.setX(1 * i_inputHandler->xvalue(0, 1));
+        }
+        if (i_inputHandler->yvalue(0, 1) > 0 || i_inputHandler->yvalue(1, 0) < 0)
+        {
+            m_velocity.setY(1 * i_inputHandler->yvalue(0, 1));
+        }
+        if (i_inputHandler->xvalue(0, 2) > 0 || i_inputHandler->xvalue(2, 0) < 0)
+        {
+            m_velocity.setY(1 * i_inputHandler->yvalue(0, 1));
+        }
+        if (i_inputHandler->yvalue(0, 2) > 0 || i_inputHandler->yvalue(2, 0) < 0)
+        {
+            m_velocity.setY(1 * i_inputHandler->yvalue(0, 2));
+        }
+    }
+    if(i_inputHandler->getButtonState(0,3)){
+        m_velocity.setX(1);
+    }
 }
 
 // ENEMY

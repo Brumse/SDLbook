@@ -2,6 +2,7 @@
 
 #include <math.h>
 
+
 class Vector2D
 {
 public:
@@ -79,4 +80,5 @@ public:
 private:
     float m_x;
     float m_y;
+    
 };

@@ -61,9 +61,9 @@ void Game::clean()
     std::cout << "cleaning game" << std::endl;
     SDL_DestroyWindow(m_pWindow);
     SDL_DestroyRenderer(m_pRenderer);
-    auto i_inputHandler = InputHandler::Instance();
-    i_inputHandler->clean();
+    InputHandler::Instance()->clean();
     SDL_Quit();
+    m_bRunning=false;
 }
 
 void Game::handleEvents()
