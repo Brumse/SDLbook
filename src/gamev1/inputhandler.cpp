@@ -88,11 +88,12 @@ void InputHandler::update()
 
             if (event.jaxis.axis == 0)
             {
-                if (event.jaxis.value > m_joystickDeadZone)
+                auto val = event.jaxis.value;
+                if (val > m_joystickDeadZone)
                 {
                     m_joyStickValues[whichOne].first->setX(1);
                 }
-                else if (event.jaxis.value < -m_joystickDeadZone)
+                else if (val < (-m_joystickDeadZone))
                 {
                     m_joyStickValues[whichOne].first->setX(-1);
                 }
@@ -103,6 +104,9 @@ void InputHandler::update()
             }
             if (event.jaxis.axis == 1)
             {
+                std::cout << '\r' << std::string(80, ' ');
+                std::cout << '\r' << event.jaxis.value << std::flush;
+
                 if (event.jaxis.value > m_joystickDeadZone)
                 {
                     m_joyStickValues[whichOne].first->setY(1);
