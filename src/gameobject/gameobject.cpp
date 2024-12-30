@@ -21,7 +21,7 @@ void SDLGameObject::draw()
 
 void SDLGameObject::update()
 {
-    // m_velocity += m_acceleration;
+    m_velocity += m_acceleration;
     m_position += m_velocity;
 }
 
@@ -67,14 +67,45 @@ void Player::handleInput()
         {
             m_velocity.setX(1 * i_inputHandler->xvalue(0, 2));
         }
+
         if (i_inputHandler->yvalue(0, 2) > 0 || i_inputHandler->yvalue(0, 2) < 0)
         {
             m_velocity.setY(1 * i_inputHandler->yvalue(0, 2));
         }
+
+        if (i_inputHandler->getButtonState(0, 3))
+        {
+            m_velocity.setX(1);
+        }
     }
-    if(i_inputHandler->getButtonState(0,3)){
+
+    if (i_inputHandler->getMouseButtonState(LEFT))
+    {
         m_velocity.setX(1);
     }
+    Vector2D *vec = i_inputHandler->getMousePosition();
+    m_velocity = (*vec - m_position) /100;
+
+    if(i_inputHandler->isKeyDown(SDL_SCANCODE_RIGHT))
+    {
+        m_velocity.setX(2);
+    }
+    
+    if (i_inputHandler->isKeyDown(SDL_SCANCODE_LEFT))
+    {
+        m_velocity.setX(-2);
+    }
+
+    if (i_inputHandler->isKeyDown(SDL_SCANCODE_UP))
+    {
+        m_velocity.setY(-2);
+    }
+    if (i_inputHandler->isKeyDown(SDL_SCANCODE_DOWN))
+    {
+        m_velocity.setY(2);
+    }
+    
+
 }
 
 // ENEMY
