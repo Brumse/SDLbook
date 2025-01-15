@@ -2,6 +2,9 @@
 #include <iostream>
 #include <algorithm>
 #include "inputhandler.h"
+#include "gamestate.h"
+#include "playerstate.h"
+#include "menustate.h"
 
 Game *Game::s_pInstance = 0;
 
@@ -36,6 +39,9 @@ bool Game::init(const char *title, int xpos, int ypos, int width,
 
     TextureManager::Instance()->load("assets/animate-alpha.png", "animate", m_pRenderer);
 
+    m_pGameStateMachine = new GameStateMachine();
+    m_pGameStateMachine->changeState(new MenuState());
+
     m_gameObjects.push_back(new Player(new LoaderParams(100, 100, 128, 82, "animate")));
     m_gameObjects.push_back(new Enemy(new LoaderParams(300, 300, 128, 82, "animate")));
 
@@ -49,10 +55,7 @@ bool Game::init(const char *title, int xpos, int ypos, int width,
 void Game::render()
 {
     SDL_RenderClear(m_pRenderer);
-    for (auto &go : m_gameObjects)
-    {
-        go->draw();
-    }
+    m_pGameStateMachine->render();
     SDL_RenderPresent(m_pRenderer);
 }
 
@@ -63,19 +66,25 @@ void Game::clean()
     SDL_DestroyRenderer(m_pRenderer);
     InputHandler::Instance()->clean();
     SDL_Quit();
-    m_bRunning=false;
+    m_bRunning = false;
 }
 
 void Game::handleEvents()
 {
     auto i_inputHandler = InputHandler::Instance();
-    i_inputHandler->update(); 
+    i_inputHandler->update();
+
+    if (i_inputHandler->isKeyDown(SDL_SCANCODE_RETURN))
+    {
+        m_pGameStateMachine->changeState(new PlayState());
+    }
 }
 
 void Game::update()
 {
-    std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [](auto &go)
-                  { go->update(); });
+    // std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [](auto &go)
+    //               { go->update(); });
+    m_pGameStateMachine->update();
 }
 
 Game *Game::instance()
@@ -87,3 +96,5 @@ Game *Game::instance()
     }
     return s_pInstance;
 }
+
+
